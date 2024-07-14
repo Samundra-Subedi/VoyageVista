@@ -4,7 +4,7 @@ import { FaStar } from 'react-icons/fa';
 // Custom Button Component
 const Button = ({ children, className, variant, size, ...props }) => {
   const baseStyles = 'px-4 py-2 rounded-md';
-  const variantStyles = variant === 'outline' ? 'border border-gray-300' : variant === 'ghost' ? 'bg-transparent' : 'bg-black text-white';
+  const variantStyles = variant === 'outline' ? 'border border-gray-300 hover:bg-green-500 hover:text-white' : variant === 'ghost' ? 'bg-transparent hover:border hover:bg-gray-50' : 'bg-black text-white';
   const sizeStyles = size === 'sm' ? 'text-sm' : 'text-base';
   return (
     <button className={`${baseStyles} ${variantStyles} ${sizeStyles} ${className}`} {...props}>
