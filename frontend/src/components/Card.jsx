@@ -1,4 +1,5 @@
-import { FaStar, FaThumbsUp, FaThumbsDown, FaCommentDots } from 'react-icons/fa';
+import React from 'react';
+import { FaStar } from 'react-icons/fa';
 
 // Custom Button Component
 const Button = ({ children, className, variant, size, ...props }) => {
@@ -26,18 +27,20 @@ const CardContent = ({ children, className, ...props }) => (
   </div>
 );
 
-// Custom Avatar Component
-const Avatar = ({ src, alt, fallback, className, ...props }) => (
-  <div className={`w-10 h-10 border rounded-full overflow-hidden ${className}`} {...props}>
-    {src ? <img src={src} alt={alt} className="w-full h-full object-cover" /> : <div className="flex items-center justify-center h-full">{fallback}</div>}
-  </div>
-);
-
 // Card Component for Travel Destinations
-export default function CardComponent ({ destination }) {
+export default function CardComponent({ destination }) {
+  const backendUrl = 'http://localhost:3000'; // Update this with your backend URL
+  const fallbackImage = '/path/to/fallback-image.jpg'; // Replace with your fallback image path
+  const imageUrl = destination.image ? `${backendUrl}${destination.image}` : fallbackImage;
+
   return (
     <Card>
-      <img src={destination.image} alt={destination.name} className="w-full h-48 object-cover" />
+      <img
+        src={imageUrl}
+        alt={destination.name}
+        className="w-full h-48 object-cover"
+        onError={(e) => { e.target.src = fallbackImage; }}
+      />
       <CardContent>
         <div className="flex items-center justify-between mb-2">
           <span className="text-lg font-semibold">{destination.name}</span>
@@ -54,5 +57,4 @@ export default function CardComponent ({ destination }) {
       </CardContent>
     </Card>
   );
-};
-
+}

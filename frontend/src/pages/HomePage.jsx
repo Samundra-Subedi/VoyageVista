@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import CardComponent from '../components/Card';
 import ReviewComponent from '../components/Reviews';
 import ChatWithAI from '../components/ChatWithAI';
@@ -6,9 +7,6 @@ import AddPlaceModal from '../components/AddPlaceModal';
 import Footer from '../components/Footer';
 import Navbar from '../components/Navbar';
 
-// import { Link } from 'react-router-dom';
-
-// Custom Button Component
 const Button = ({ children, className, variant, size, ...props }) => {
   const baseStyles = 'px-4 py-2 rounded-md';
   const variantStyles = variant === 'outline' ? 'border border-gray-300' : variant === 'ghost' ? 'bg-transparent' : 'bg-black text-white';
@@ -22,59 +20,43 @@ const Button = ({ children, className, variant, size, ...props }) => {
 
 export default function HomePage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [travelDestinations, setTravelDestinations] = useState([
-    {
-      id: 1,
-      name: 'Maui',
-      image: '/maui.jpg',
-      description: 'A tropical paradise with stunning beaches and beautiful landscapes.',
-      rating: 4.8,
-    },
-    {
-      id: 2,
-      name: 'Paris',
-      image: '/paris.jpg',
-      description: 'The city of love, famous for its landmarks, museums, and cafes.',
-      rating: 4.7,
-    },
-    {
-      id: 3,
-      name: 'Tokyo',
-      image: '/tokyo.jpg',
-      description: 'A bustling metropolis known for its modernity and rich cultural heritage.',
-      rating: 4.6,
-    },
-    {
-      id: 4,
-      name: 'New Zealand',
-      image: '/newzealand.jpg',
-      description: 'Renowned for its stunning natural landscapes and adventure activities.',
-      rating: 4.9,
-    },
-    {
-      id: 5,
-      name: 'Barcelona',
-      image: '/barcelona.jpg',
-      description: 'A vibrant city known for its art, architecture, and lively atmosphere.',
-      rating: 4.5,
-    },
-  ]);
+  const [travelDestinations, setTravelDestinations] = useState([]);
+
+  useEffect(() => {
+    const fetchPlaces = async () => {
+      try {
+        const response = await axios.get('http://localhost:3000/places');
+        setTravelDestinations(response.data);
+        console.log(response.data)
+      } catch (error) {
+        console.error('Error fetching places:', error);
+      }
+    };
+
+    fetchPlaces();
+  }, []);
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
 
-  const handleAddPlace = (event) => {
+  const handleAddPlace = async (event) => {
     event.preventDefault();
-    const newPlace = {
-      id: travelDestinations.length + 1,
-      name: event.target.name.value,
-      image: event.target.image.value,
-      description: event.target.description.value,
-      rating: parseFloat(event.target.rating.value),
-    };
-    setTravelDestinations([...travelDestinations, newPlace]);
-    closeModal();
+    const formData = new FormData(event.target);
+
+    try {
+      const response = await axios.post('http://localhost:3000/places', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+
+      setTravelDestinations([...travelDestinations, response.data]);
+      closeModal();
+    } catch (error) {
+      console.error('Error adding place:', error);
+    }
   };
+
 
   return (
     <>
