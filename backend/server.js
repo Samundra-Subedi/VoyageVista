@@ -158,14 +158,16 @@ app.post('/suggestions', async (req, res) => {
     try {
         // Create the ML engine and model if they don't exist
         await createMLEngine();
-
         await createModel();
+
+        // Wait for model creation
+        await new Promise(resolve => setTimeout(resolve, 5000));
 
         // Query the model
         const suggestions = await queryModel(places, question);
 
         if (suggestions) {
-            res.json(suggestions);
+            res.json({ places, question, suggestions });
         } else {
             res.status(500).json({ error: 'Failed to generate suggestions' });
         }
@@ -174,6 +176,72 @@ app.post('/suggestions', async (req, res) => {
         res.status(500).json({ error: 'An error occurred while generating suggestions' });
     }
 });
+
+
+const createSentimentAnalysisModel = async () => {
+    const query = `
+    CREATE MODEL mindsdb.sentiment_classifier_model
+    PREDICT sentiment
+    USING
+        engine = 'minds_endpoint_engine',
+        max_tokens = 512,
+    prompt_template = 'describe the sentiment, highlights and negative_feedback of the reviews    
+                     "{{review}}.":
+                     Format the result as {"sentiment":"......","highlights":".......", "negative_feedback":"....."}.';
+    `;
+
+    await axios.post(mindsdbApiUrl, { query }, {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    });
+
+    await new Promise(resolve => setTimeout(resolve, 4000));
+};
+
+
+app.post('/sentiment-analysis', async (req, res) => {
+    const { reviews } = req.body;
+
+    if (!reviews || !Array.isArray(reviews) || reviews.length === 0) {
+        return res.status(400).json({ error: 'Invalid input. Please provide an array of reviews.' });
+    }
+
+    try {
+        // Create the ML engine and model if they don't exist
+        await createMLEngine();
+        await createSentimentAnalysisModel();
+
+        // Wait for model creation
+        await new Promise(resolve => setTimeout(resolve, 5000));
+
+        // Prepare reviews for model querying
+        const reviewsString = reviews.join(' '); // Join reviews into a single string
+        const query = `
+            SELECT review, sentiment
+            FROM sentiment_classifier_model
+            WHERE review = '${reviewsString}';
+        `;
+
+        const response = await axios.post(mindsdbApiUrl, { query }, {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+        const result = response.data.data;
+        console.log(result)
+        if (result) {
+            res.json(result);
+        } else {
+            res.status(500).json({ error: 'Failed to analyze sentiment' });
+        }
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'An error occurred while analyzing sentiment' });
+    }
+});
+
 
 const PORT = 3000;
 app.listen(PORT, () => {
