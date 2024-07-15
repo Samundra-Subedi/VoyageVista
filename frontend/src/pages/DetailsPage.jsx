@@ -7,6 +7,7 @@ import Footer from '../components/Footer';
 export default function Details() {
     const [reviews, setReviews] = useState([]);
     const [formRating, setFormRating] = useState(5);
+    const [averageRating, setAverageRating] = useState(0);
     const location = useLocation();
     const details = location.state?.details || {};
 
@@ -17,8 +18,18 @@ export default function Details() {
     useEffect(() => {
         fetch(`${backendUrl}/places/${details.id}/reviews`)
             .then(response => response.json())
-            .then(data => setReviews(data));
+            .then(data => {
+                setReviews(data);
+                calculateAverageRating(data);
+            });
     }, [details.id]);
+
+    const calculateAverageRating = (reviews) => {
+        if (reviews.length === 0) return;
+        const total = reviews.reduce((sum, review) => sum + review.rating, 0);
+        const average = total / reviews.length;
+        setAverageRating(average.toFixed(1)); // Round to one decimal place
+    };
 
     const handleSubmitReview = (event) => {
         event.preventDefault();
@@ -36,7 +47,9 @@ export default function Details() {
         })
             .then(response => response.json())
             .then(data => {
-                setReviews([...reviews, { ...newReview, id: data.id }]);
+                const updatedReviews = [...reviews, { ...newReview, id: data.id }];
+                setReviews(updatedReviews);
+                calculateAverageRating(updatedReviews);
             });
     };
 
@@ -69,7 +82,7 @@ export default function Details() {
                                 <FaStar className="w-5 h-5 text-yellow-500" />
                                 <div>
                                     <div className="font-medium">Rating</div>
-                                    <div className="text-gray-600 text-sm">4.9 (123 reviews)</div>
+                                    <div className="text-gray-600 text-sm">{averageRating} (Average)</div>
                                 </div>
                             </div>
                         </div>
@@ -128,7 +141,7 @@ export default function Details() {
                     </div>
                 </div>
             </div>
-            <Footer/>   
+            <Footer />
         </div>
     );
 }

@@ -18,43 +18,6 @@ function Button({ children, variant = 'solid', className = '', ...props }) {
     );
 }
 
-function Select({ children }) {
-    const [isOpen, setIsOpen] = useState(false);
-    const [selectedValue, setSelectedValue] = useState('EN');
-
-    const toggleOpen = () => setIsOpen(!isOpen);
-    const selectItem = (value) => {
-        setSelectedValue(value);
-        setIsOpen(false);
-    };
-
-    return (
-        <div className="relative">
-            <button
-                className="text-muted-foreground px-4 py-2 border border-gray-300 rounded focus:outline-none"
-                onClick={toggleOpen}
-            >
-                {selectedValue}
-            </button>
-            {isOpen && (
-                <div className="absolute mt-2 w-full border border-gray-300 rounded bg-white shadow-lg z-10">
-                    {children({ selectItem })}
-                </div>
-            )}
-        </div>
-    );
-}
-
-function SelectItem({ children, value, selectItem }) {
-    return (
-        <div
-            className="px-4 py-2 cursor-pointer hover:bg-gray-100"
-            onClick={() => selectItem(value)}
-        >
-            {children}
-        </div>
-    );
-}
 
 export default function Component() {
     return (
@@ -87,7 +50,7 @@ export default function Component() {
 
                     </div>
                 </main>
-                <ServicesComponent />
+
             </div>
             <Footer />
         </>
@@ -109,26 +72,6 @@ function PlayIcon(props) {
             strokeLinejoin="round"
         >
             <polygon points="6 3 20 12 6 21 6 3" />
-        </svg>
-    );
-}
-
-function XIcon(props) {
-    return (
-        <svg
-            {...props}
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-        >
-            <path d="M18 6 6 18" />
-            <path d="m6 6 12 12" />
         </svg>
     );
 }

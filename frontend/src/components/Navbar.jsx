@@ -23,16 +23,16 @@ const Navbar = () => {
                 <Link to='/explore' className="hover:text-gray-700">
                     Explore
                 </Link>
-                <a href="#" className="hover:text-gray-700">
+                <Link to='/about' className="hover:text-gray-700">
                     About
-                </a>
+                </Link>
                 <a href="#" className="hover:text-gray-700">
                     Quine
                 </a>
                 <a href="#" className="hover:text-gray-700">
                     Github
                 </a>
-                <Button variant="outline">Sign up</Button>
+                <Link to='/contactus'><Button variant="outline">Contact Us</Button></Link> 
             </nav>
         </header>
     )

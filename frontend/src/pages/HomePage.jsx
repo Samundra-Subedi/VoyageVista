@@ -60,13 +60,13 @@ export default function HomePage() {
 
   const handleViewDetail = (details) => {
     // console.log(details);
-    navigate('/details', {state: {details}})
+    navigate('/details', { state: { details } })
   }
 
   return (
     <>
       <Navbar />
-      <div className="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16">
+      <div className="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16 min-h-[60vh]">
         <div className="flex flex-col md:flex-row items-center justify-between mb-8">
           <div className="space-y-2">
             <h1 className="text-3xl md:text-4xl font-bold tracking-tight">Discover Your Next Adventure</h1>
@@ -76,8 +76,8 @@ export default function HomePage() {
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {travelDestinations.map((destination) => (
-            <div className=' hover:cursor-pointer' onClick={()=>{handleViewDetail(destination)}} key={destination.id}>
-              <CardComponent key={destination.id} destination={destination}/>
+            <div className=' hover:cursor-pointer' onClick={() => { handleViewDetail(destination) }} key={destination.id}>
+              <CardComponent key={destination.id} destination={destination} />
             </div>
           ))}
         </div>
@@ -85,7 +85,9 @@ export default function HomePage() {
         <ChatWithAI />
         <AddPlaceModal isOpen={isModalOpen} onClose={closeModal} onSubmit={handleAddPlace} />
       </div>
-      <Footer />
+      <div>
+        <Footer />
+      </div>
     </>
   );
 }

@@ -50,7 +50,7 @@ const ChatWithAI = () => {
                 </div>
               ))
             ) : (
-              <p className="text-center text-gray-500 mt-8">Start your conversation...</p>
+              <p className="text-center text-gray-500 mt-8">Plan your trip by starting conversation...</p>
             )}
           </div>
           <div className="p-4 bg-white border-t border-gray-200">
