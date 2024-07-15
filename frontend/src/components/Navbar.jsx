@@ -17,7 +17,7 @@ const Navbar = () => {
     return (
         <header className="relative flex items-center justify-between px-8 py-4 lg:px-32">
             <div className="flex items-center space-x-2">
-                <Link to='/'><span className="text-2xl font-bold text-[#1a202c]">Travel</span></Link>
+                <Link to='/'><span className="text-2xl font-bold text-[#1a202c]">VoyageVista</span></Link>
             </div>
             <nav className="flex items-center space-x-8 text-[#1a202c]">
                 <Link to='/explore' className="hover:text-gray-700">
@@ -26,7 +26,7 @@ const Navbar = () => {
                 <Link to='/about' className="hover:text-gray-700">
                     About
                 </Link>
-                <a href="#" className="hover:text-gray-700">
+                <a href="https://quira.sh/" className="hover:text-gray-700">
                     Quine
                 </a>
                 <a href="#" className="hover:text-gray-700">

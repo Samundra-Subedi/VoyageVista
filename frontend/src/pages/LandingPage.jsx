@@ -3,6 +3,7 @@ import HeroImage from '../images/Traveller1.png'
 import ServicesComponent from '../components/Features';
 import Footer from '../components/Footer';
 import Navbar from '../components/Navbar';
+import { Link } from 'react-router-dom';
 
 function Button({ children, variant = 'solid', className = '', ...props }) {
     const baseClass = 'px-4 py-2 rounded focus:outline-none transition';
@@ -26,7 +27,7 @@ export default function Component() {
                 <div className="absolute inset-0 bg-[#fef6e4] clip-patch" style={{ clipPath: 'circle(40% at 80% 23%)', zIndex: -1 }}></div>
                 <div className="absolute inset-0 bg-[#fef6e4] clip-patch" style={{ clipPath: 'circle(27% at 13% 9%)', zIndex: -1 }}></div>
                 {/* <div className="absolute inset-0 bg-[#fef6e4] clip-patch" style={{clipPath: 'circle(23.5% at 0 74%)', zIndex: -1 }}></div> */}
-                <Navbar/>
+                <Navbar />
                 <main className="relative flex flex-col items-center justify-center px-8 py-16 lg:flex-row lg:justify-between lg:px-32">
                     <div className="max-w-xl space-y-6 lg:pb-24">
                         <h2 className="text-xl font-semibold text-[#f25f4c]">BEST DESTINATIONS AROUND THE WORLD</h2>
@@ -34,11 +35,12 @@ export default function Component() {
                             Travel, enjoy and live a new and full life
                         </div>
                         <p className="text-lg text-[#1a202c]">
-                            Built Wicket longer admire do barton vanity itself do in it. Preferred to sportsmen it engrossed listening.
-                            Park gate sell they west hard for the.
+                            Embark on unforgettable adventures around the globe, share breathtaking views and stories with fellow travelers, uncover hidden gems in every corner, and enjoy personalized travel insights and recommendations powered by cutting-edge AI technology.
                         </p>
                         <div className="flex items-center space-x-4">
-                            <Button className="bg-[#F1A501] text-white shadow-md shadow-[#F1A501] hover:bg-[#e09900]">Find out more</Button>
+                            <Link to='/explore'>
+                                <Button className="bg-[#F1A501] text-white shadow-md shadow-[#F1A501] hover:bg-[#e09900]">Find out more</Button>
+                            </Link>
                             <Button variant="ghost" className="flex items-center space-x-2">
                                 <PlayIcon className="h-6 w-6 text-[#f25f4c]" />
                                 <span>Play Demo</span>

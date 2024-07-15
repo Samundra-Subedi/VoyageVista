@@ -74,24 +74,27 @@ app.get('/places/:id/reviews', (req, res) => {
     const sql = 'SELECT * FROM reviews WHERE place_id = ?';
     db.all(sql, [placeId], (err, rows) => {
         if (err) {
-            res.status(500).json({ error: err.message });
-            return;
+            return res.status(500).json({ error: err.message });
         }
         res.json(rows);
     });
 });
 
 
+
 app.post('/places/:id/reviews', (req, res) => {
     const placeId = req.params.id;
     const { name, rating, review } = req.body;
+
     const sql = 'INSERT INTO reviews (place_id, name, rating, review) VALUES (?, ?, ?, ?)';
     const params = [placeId, name, rating, review];
+
     db.run(sql, params, function (err) {
         if (err) {
-            res.status(500).json({ error: err.message });
-            return;
+            return res.status(500).json({ error: err.message });
         }
+        
+        // Return the ID of the newly inserted review
         res.json({ id: this.lastID });
     });
 });
@@ -187,7 +190,7 @@ const createSentimentAnalysisModel = async () => {
         max_tokens = 512,
     prompt_template = 'describe the sentiment, highlights and negative_feedback of the reviews    
                      "{{review}}.":
-                     Format the result as {"sentiment":"......","highlights":".......", "negative_feedback":"....."}.';
+                     Format the result as {"sentiment":"......","highlights":".......", "negative_feedback":"....."}.'
     `;
 
     await axios.post(mindsdbApiUrl, { query }, {
@@ -202,7 +205,7 @@ const createSentimentAnalysisModel = async () => {
 
 app.post('/sentiment-analysis', async (req, res) => {
     const { reviews } = req.body;
-
+    console.log(reviews)
     if (!reviews || !Array.isArray(reviews) || reviews.length === 0) {
         return res.status(400).json({ error: 'Invalid input. Please provide an array of reviews.' });
     }
@@ -230,7 +233,7 @@ app.post('/sentiment-analysis', async (req, res) => {
         });
 
         const result = response.data.data;
-        console.log(result)
+        // console.log(result)
         if (result) {
             res.json(result);
         } else {

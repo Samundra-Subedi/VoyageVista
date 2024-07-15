@@ -36,6 +36,7 @@ export default function Details() {
     const handleSubmitReview = (event) => {
         event.preventDefault();
         const newReview = {
+            name: event.target.name.value,
             rating: formRating,
             review: event.target.review.value,
         };
@@ -53,10 +54,10 @@ export default function Details() {
                 calculateAverageRating(updatedReviews);
             });
     };
-    console.log(sentimentAnalysis)
+
     const handleGetReviewAnalysis = () => {
         setLoading(true); // Set loading to true
-        const reviewTexts = reviews.map(review => review.review);
+        const reviewTexts = reviews.map(review => review.review.replace(/[!\'?&$#]/g, '')); // Remove special characters from review texts
         fetch(`${backendUrl}/sentiment-analysis`, {
             method: 'POST',
             headers: {
@@ -122,13 +123,13 @@ export default function Details() {
                     <div className="grid gap-8">
                         <div>
                             <h2 className="text-2xl font-bold">Review Analysis</h2>
-                                    <button
-                                        onClick={handleGetReviewAnalysis}
-                                        className={`bg-black text-white px-4 py-2 rounded-md hover:bg-black mt-4 ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
-                                        disabled={loading} // Disable the button while loading
-                                    >
-                                        {loading ? 'Loading...' : 'Get Review Analysis'}
-                                    </button>
+                            <button
+                                onClick={handleGetReviewAnalysis}
+                                className={`bg-black text-white px-4 py-2 rounded-md hover:bg-black mt-4 ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                disabled={loading} // Disable the button while loading
+                            >
+                                {loading ? 'Loading...' : 'Get Review Analysis'}
+                            </button>
 
                             {sentimentAnalysis && (
                                 <div className="mt-4 grid gap-4">
@@ -166,7 +167,7 @@ export default function Details() {
                                     <label htmlFor="review" className="text-sm font-medium">Review</label>
                                     <textarea id="review" rows={4} placeholder="Share your thoughts" className="border border-gray-300 rounded-md p-2" required />
                                 </div>
-                                <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded-md justify-self-start hover:bg-blue-600">
+                                <button type="submit" className="bg-black text-white px-4 py-2 rounded-md justify-self-start hover:bg-black">
                                     Submit Review
                                 </button>
                             </form>

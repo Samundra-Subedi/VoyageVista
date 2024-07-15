@@ -7,17 +7,17 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-5 gap-8">
           {/* Logo and description */}
           <div className="col-span-1 md:col-span-2">
-            <h2 className="text-3xl font-bold mb-2">Travel</h2>
+            <h2 className="text-3xl font-bold mb-2">VoyageVista</h2>
             <p className="text-sm text-gray-600">
-              Book your trip in minute, get full Control for much longer.
+              Travel Smarter, Share Better.
             </p>
           </div>
 
           <div>
-            <h3 className="font-semibold mb-4">Company</h3>
+            <h3 className="font-semibold mb-4">Navigate</h3>
             <ul className="space-y-2">
-              <li><a href="#" className="text-sm text-gray-600 hover:text-gray-900">About</a></li>
-              <li><a href="#" className="text-sm text-gray-600 hover:text-gray-900">Explore</a></li>
+              <li><a href="/about" className="text-sm text-gray-600 hover:text-gray-900">About</a></li>
+              <li><a href="/explore" className="text-sm text-gray-600 hover:text-gray-900">Explore</a></li>
               <li><a href="#" className="text-sm text-gray-600 hover:text-gray-900">Github</a></li>
             </ul>
           </div>
@@ -46,7 +46,7 @@ const Footer = () => {
 
         {/* Copyright */}
         <div className="mt-8 text-center text-sm text-gray-500">
-          All rights Travel
+          All rights VoyageVista
         </div>
       </div>
     </footer>
