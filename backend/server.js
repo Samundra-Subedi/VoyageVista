@@ -4,14 +4,20 @@ const sqlite3 = require('sqlite3').verbose();
 const multer = require('multer');
 const cors = require('cors');
 const path = require('path');
+const dotenv = require('dotenv');
+const axios = require('axios');
+
+dotenv.config();
 
 const app = express();
 const db = new sqlite3.Database('./database/places.db');
-
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
 app.use('/uploads', express.static(path.join(__dirname, 'uploads'))); // Ensure this line is present
+
+const mindsdbApiUrl = process.env.MINDSDB_API_URL;
+const mindsdbApiKey = process.env.MINDSDB_API_KEY;
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
@@ -88,6 +94,85 @@ app.post('/places/:id/reviews', (req, res) => {
         }
         res.json({ id: this.lastID });
     });
+});
+
+const createMLEngine = async () => {
+    const query = `
+        CREATE ML_ENGINE minds_endpoint_engine
+        FROM minds_endpoint
+        USING
+            minds_endpoint_api_key = '${mindsdbApiKey}';
+    `;
+
+    await axios.post(mindsdbApiUrl, { query }, {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    });
+};
+
+const createModel = async () => {
+    const query = `
+    CREATE MODEL mindsdb.travel_suggestions
+    PREDICT suggestions
+    USING
+        engine = 'minds_endpoint_engine',
+        max_tokens = 512,
+        prompt_template = 'Based on the following available places: {{places}}, and the question: {{user_question}}, suggest place to visit. Provide short result with name and location of that place. Only provides places from above places list.';
+    `;
+
+    await axios.post(mindsdbApiUrl, { query }, {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    });
+
+    await new Promise(resolve => setTimeout(resolve, 4000));
+};
+
+const queryModel = async (places, user_question) => {
+    const placesString = places.map(place => `${place.name} in ${place.location}`).join(', ');
+    const query = `
+        SELECT suggestions
+        FROM mindsdb.travel_suggestions
+        WHERE places = '${placesString}' AND user_question = '${user_question}';
+    `;
+
+    const response = await axios.post(mindsdbApiUrl, { query }, {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    });
+
+    return response.data.data;
+};
+
+
+app.post('/suggestions', async (req, res) => {
+    const { places, question } = req.body;
+
+    if (!places || !Array.isArray(places) || places.length === 0 || !question) {
+        return res.status(400).json({ error: 'Invalid input. Please provide an array of places and a question.' });
+    }
+
+    try {
+        // Create the ML engine and model if they don't exist
+        await createMLEngine();
+
+        await createModel();
+
+        // Query the model
+        const suggestions = await queryModel(places, question);
+
+        if (suggestions) {
+            res.json(suggestions);
+        } else {
+            res.status(500).json({ error: 'Failed to generate suggestions' });
+        }
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'An error occurred while generating suggestions' });
+    }
 });
 
 const PORT = 3000;
