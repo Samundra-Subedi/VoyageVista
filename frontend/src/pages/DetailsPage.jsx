@@ -8,6 +8,8 @@ export default function Details() {
     const [reviews, setReviews] = useState([]);
     const [formRating, setFormRating] = useState(5);
     const [averageRating, setAverageRating] = useState(0);
+    const [sentimentAnalysis, setSentimentAnalysis] = useState(null);
+    const [loading, setLoading] = useState(false); // Loading state
     const location = useLocation();
     const details = location.state?.details || {};
 
@@ -34,7 +36,6 @@ export default function Details() {
     const handleSubmitReview = (event) => {
         event.preventDefault();
         const newReview = {
-            name: event.target.name.value,
             rating: formRating,
             review: event.target.review.value,
         };
@@ -50,6 +51,28 @@ export default function Details() {
                 const updatedReviews = [...reviews, { ...newReview, id: data.id }];
                 setReviews(updatedReviews);
                 calculateAverageRating(updatedReviews);
+            });
+    };
+    console.log(sentimentAnalysis)
+    const handleGetReviewAnalysis = () => {
+        setLoading(true); // Set loading to true
+        const reviewTexts = reviews.map(review => review.review);
+        fetch(`${backendUrl}/sentiment-analysis`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ reviews: reviewTexts }),
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data)
+                setSentimentAnalysis(JSON.parse(data[0][1]));
+                setLoading(false); // Set loading to false when done
+            })
+            .catch(error => {
+                console.error('Error fetching sentiment analysis:', error);
+                setLoading(false); // Set loading to false on error
             });
     };
 
@@ -99,11 +122,21 @@ export default function Details() {
                     <div className="grid gap-8">
                         <div>
                             <h2 className="text-2xl font-bold">Review Analysis</h2>
-                            <div className="mt-4 grid gap-4">
-                                <Analysis title="Overall Sentiment" value="Overwhelmingly positive" icon={<FaExclamationTriangle />} />
-                                <Analysis title="Key Highlights" value="Serene atmosphere, attention to detail, peaceful getaway" icon={<FaRegThumbsUp />} />
-                                <Analysis title="Negative Feedback" value="None, all reviews are overwhelmingly positive" icon={<FaTimes />} />
-                            </div>
+                                    <button
+                                        onClick={handleGetReviewAnalysis}
+                                        className={`bg-black text-white px-4 py-2 rounded-md hover:bg-black mt-4 ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                        disabled={loading} // Disable the button while loading
+                                    >
+                                        {loading ? 'Loading...' : 'Get Review Analysis'}
+                                    </button>
+
+                            {sentimentAnalysis && (
+                                <div className="mt-4 grid gap-4">
+                                    <Analysis title="Overall Sentiment" value={sentimentAnalysis.sentiment} icon={<FaExclamationTriangle />} />
+                                    <Analysis title="Key Highlights" value={sentimentAnalysis.highlights} icon={<FaRegThumbsUp />} />
+                                    <Analysis title="Negative Feedback" value={sentimentAnalysis.negative_feedback} icon={<FaTimes />} />
+                                </div>
+                            )}
                         </div>
                         <div>
                             <h2 className="text-2xl font-bold">Reviews</h2>
@@ -176,12 +209,9 @@ const Analysis = ({ title, value, icon }) => {
         <div className="flex items-center gap-4">
             <div className="flex-1">
                 <div className="font-medium">{title}</div>
-                <div className="text-gray-600 text-sm">{value}</div>
+                <div className="text-gray-600 text-lg">{value}</div>
             </div>
-            <div className="flex items-center gap-2">
-                {icon}
-                <div className="font-medium text-2xl">4.8</div>
-            </div>
+
         </div>
     );
 };

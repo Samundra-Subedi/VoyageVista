@@ -49,7 +49,7 @@ export default function CardComponent({ destination }) {
             <span className="font-medium">{destination.rating}</span>
           </div>
         </div>
-        <p className="text-gray-600 text-sm line-clamp-2">{destination.description}</p>
+        <p className="text-gray-600 text-sm line-clamp-2 min-h-10">{destination.description}</p>
         <div className="flex items-center justify-between mt-4">
           <Button variant="outline" size="sm">Rate Place</Button>
           <Button variant="ghost" size="sm">View Details</Button>

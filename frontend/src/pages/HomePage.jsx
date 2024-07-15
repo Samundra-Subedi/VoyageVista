@@ -82,7 +82,7 @@ export default function HomePage() {
           ))}
         </div>
 
-        <ChatWithAI />
+        <ChatWithAI travelDestinations={travelDestinations}/>
         <AddPlaceModal isOpen={isModalOpen} onClose={closeModal} onSubmit={handleAddPlace} />
       </div>
       <div>
