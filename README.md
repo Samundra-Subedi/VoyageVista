@@ -25,7 +25,7 @@
 
 ## Introduction
 
-WanderSpot is more than just a travel web app—it's your gateway to exploring the world through the eyes of fellow travelers. Whether you're seeking iconic landmarks, local hotspots, or tranquil getaways, WanderSpot provides a platform to discover new places, share your experiences, and connect with a community of explorers.
+VoyageVista is more than just a travel web app—it's your gateway to exploring the world through the eyes of fellow travelers. Whether you're seeking iconic landmarks, local hotspots, or tranquil getaways. Discover new destinations and share your travel experiences with VoyageVista! Our platform connects you with a vibrant community of explorers, offering personalized recommendations powered by MindsDB. Plus, get exclusive summaries of reviews to help you plan the perfect trip. Join VoyageVista and embark on your next adventure today!
 
 ## Features
 
